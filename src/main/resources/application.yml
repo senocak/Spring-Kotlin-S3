@@ -1,0 +1,8 @@
+spring:
+    application:
+        name: kotlin-s3-client
+s3:
+    endpoint: http://localhost:4566
+    accessKey: test
+    secretKey: test
+    region: us-east-1

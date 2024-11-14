@@ -1,0 +1,365 @@
+{
+	"info": {
+		"_postman_id": "0be627d1-50e9-4cf2-ad83-b01ec84b806a",
+		"name": "s3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7821151",
+		"_collection_link": "https://lively-comet-8198.postman.co/workspace/An%C4%B1l~d33d46fc-ebc0-4ccb-81ba-caceff009d2d/collection/7821151-0be627d1-50e9-4cf2-ad83-b01ec84b806a?action=share&source=collection_link&creator=7821151"
+	},
+	"item": [
+		{
+			"name": "Settings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List All Buckets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const   response    =   pm.response",
+							"        json        =   response.json()",
+							"pm.test(\"Status code is 200\", function () {",
+							"    const buckets = json.buckets",
+							"    response.to.have.status(200)",
+							"    pm.collectionVariables.set(\"bucketName\", buckets[buckets.length - 1].name)",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3/buckets?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Bucket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    const path = pm.request.url.path",
+							"    pm.collectionVariables.set(\"bucketName\", path[path.length - 1])",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3/buckets/{{$randomWord}}?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets",
+						"{{$randomWord}}"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Single Bucket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3/buckets/{{bucketName}}?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets",
+						"{{bucketName}}"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Bucket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const   response    =   pm.response",
+							"        json        =   response.json()",
+							"pm.test(\"Status code is 200\", function () {",
+							"    const contents = json.contents",
+							"    response.to.have.status(200)",
+							"    pm.collectionVariables.set(\"key\", contents[contents.length - 1].key)",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3/buckets/{{bucketName}}?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets",
+						"{{bucketName}}"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Object Of Bucket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/tcasenocak/Desktop/top-honey4-1-jibri-4-hour.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/s3/buckets/{{bucketName}}/files?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets",
+						"{{bucketName}}",
+						"files"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Content Of Object Of Bucket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3/buckets/{{bucketName}}/files/{{key}}?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets",
+						"{{bucketName}}",
+						"files",
+						"{{key}}"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Object Of Bucket",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/s3/buckets/{{bucketName}}/files/{{key}}?legacy=false",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"s3",
+						"buckets",
+						"{{bucketName}}",
+						"files",
+						"{{key}}"
+					],
+					"query": [
+						{
+							"key": "legacy",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bucketName",
+			"value": ""
+		},
+		{
+			"key": "key",
+			"value": ""
+		}
+	]
+}

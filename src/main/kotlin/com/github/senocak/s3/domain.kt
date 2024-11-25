@@ -1,8 +1,15 @@
 package com.github.senocak.s3
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.JsonTypeName
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -19,7 +26,6 @@ import java.time.format.DateTimeFormatter
 import java.util.HexFormat
 import java.util.Locale
 import java.util.TreeMap
-import java.util.function.Consumer
 import java.util.function.Function
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -36,6 +42,22 @@ data class AmzDate(
 ) {
     val date: String = AMZDATE_FORMATTER.format(dateTime)
     val yymmdd: String = date.substring(startIndex = 0, endIndex = 8)
+}
+
+@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder("statusCode", "error", "variables")
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
+@JsonTypeName("exception")
+class ExceptionDto {
+    @Schema(example = "200", description = "Status Code", name = "statusCode", type = "Integer")
+    var statusCode = 200
+
+    @Schema(example = "Bad Input", description = "Error Description", name = "error", type = "String")
+    var error: String? = null
+
+    @ArraySchema(schema = Schema(description = "Variables of the error", name = "variables", type = "String[]"))
+    var variables: Array<String?> = arrayOf(String())
 }
 
 data class Bucket(
@@ -129,10 +151,9 @@ class S3Path(private val bucket: String?, private val key: String?, val encodeKe
             if (!key.startsWith(prefix = "/")) {
                 builder.append("/")
             }
-            if (encodeKey) {
-                builder.append(encodeKey(key))
-            } else {
-                builder.append(key)
+            when {
+                encodeKey -> builder.append(encodeKey(key))
+                else -> builder.append(key)
             }
         }
         return builder.toString()

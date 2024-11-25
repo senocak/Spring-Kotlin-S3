@@ -1,5 +1,5 @@
 ### Get Settings
-GET http://localhost:8080/s3
+GET http://localhost:8080/s3/settings
 
 ### List All Buckets
 GET http://localhost:8080/s3/buckets?legacy=true

@@ -1,3 +1,5 @@
+server:
+    port: 8009
 spring:
     application:
         name: kotlin-s3-client
@@ -6,3 +8,4 @@ s3:
     accessKey: test
     secretKey: test
     region: us-east-1
+    trace: true

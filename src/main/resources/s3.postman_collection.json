@@ -25,7 +25,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}/s3",
+					"raw": "{{url}}/s3/settings",
 					"host": [
 						"{{url}}"
 					],
